@@ -69,7 +69,7 @@ def process_numbers(worker_id, numbers_in):
     :returns: None
     """
     result_arr = []
-    base_dir = r'C:\Users\njsto\Desktop\ts\Zipped Climate Data and Chapter 14\I-P climate data_2017'
+    base_dir = r'Zipped Climate Data and Chapter 14\I-P climate data_2017'
     
     # Iterate over given numbers
     for number in numbers_in:
