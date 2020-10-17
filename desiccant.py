@@ -31,7 +31,7 @@ class DesiccantScraper:
         cp = screenshot.crop((left, top, left + width, top + height))
         return cp
 
-    def click_shit(self, name):
+    def click(self, name):
         x = self.coord[name]['x'] + self.win_loc.left + self.coord[name]['Width'] // 2
         y = self.coord[name]['y'] + self.win_loc.top + self.coord[name]['Height'] // 2
         pyautogui.click(x=x, y=y)
@@ -41,7 +41,7 @@ class DesiccantScraper:
         y = self.coord[name]['y'] + self.error_loc.top + self.coord[name]['Height'] // 2
         pyautogui.click(x=x, y=y)
 
-    def write_shit(self, name, text):
+    def write(self, name, text):
         x = self.coord[name]['x'] + self.win_loc.left + self.coord[name]['Width'] // 2
         y = self.coord[name]['y'] + self.win_loc.top + self.coord[name]['Height'] // 2
         pyautogui.click(x=x, y=y)
@@ -49,7 +49,7 @@ class DesiccantScraper:
         pyautogui.click(x=x, y=y)
         pyautogui.write(str(text))
 
-    def read_shit(self, name_list):
+    def read(self, name_list):
         result = []
         s = pyautogui.screenshot()
         for name in name_list:
@@ -78,13 +78,13 @@ class DesiccantScraper:
                 data = "NaN"
         return data
 
-    def read_many_shit_copy(self, name_list, cast_to_float=True):
+    def read_many_copy(self, name_list, cast_to_float=True):
         output = []
         for name in name_list:
-            output.append(self.read_shit_copy(name, cast_to_float))
+            output.append(self.read_copy(name, cast_to_float))
         return output
 
-    def read_drag_shit(self, name, cast_to_float=True):
+    def read_drag(self, name, cast_to_float=True):
         x = self.coord[name]['x'] + self.win_loc.left + self.coord[name]['Width'] // 2
         y = self.coord[name]['y'] + self.win_loc.top + self.coord[name]['Height'] // 2
         pyautogui.moveTo(self.getwintext_loc.left + 30, self.getwintext_loc.top + 30)
@@ -104,10 +104,10 @@ class DesiccantScraper:
             data = float(data)
         return data
 
-    def read_many_drag_shit(self, name_list, cast_to_float=True):
+    def read_many_drag(self, name_list, cast_to_float=True):
         output = []
         for name in name_list:
-            output.append(self.read_drag_shit(name, cast_to_float))
+            output.append(self.read_drag(name, cast_to_float))
         return output
 
     def read_regen(self, name_list):
@@ -126,20 +126,20 @@ class DesiccantScraper:
         return result
 
     def adjust_energy(self, target):
-        self.write_shit("Target Temp", "140")
-        self.click_shit("Calculate")
+        self.write("Target Temp", "140")
+        self.click("Calculate")
         time.sleep(3)
-        result = [float(self.read_drag_shit("React Energy")), float(self.read_regen(["Target Temp"])[0])]
+        result = [float(self.read_drag("React Energy")), float(self.read_regen(["Target Temp"])[0])]
         x = result[0]
         print(result)
         while x < target - 0.05 or x > target + 0.05:
             if x > target:
-                self.write_shit("Target Temp", str(int(result[1] - 1)))
+                self.write("Target Temp", str(int(result[1] - 1)))
                 error_exit()
             else:
-                self.write_shit("Target Temp", str(int(result[1] + 1)))
+                self.write("Target Temp", str(int(result[1] + 1)))
                 error_exit()
-            self.click_shit("Calculate")
+            self.click("Calculate")
             t = time.process_time()
             while np.array(pyautogui.screenshot(
                     region=(self.win_loc.left + 160, self.win_loc.top + 200, 1, 1)
@@ -148,7 +148,7 @@ class DesiccantScraper:
                 if time.process_time() - t > 3:
                     break
                 error_exit()
-            result = [float(self.read_drag_shit("React Energy")), float(self.read_regen(["Target Temp"])[0])]
+            result = [float(self.read_drag("React Energy")), float(self.read_regen(["Target Temp"])[0])]
             x = result[0]
         return result[0]
 
@@ -162,23 +162,23 @@ class DesiccantScraper:
         # react_temp = 75
         # react_grains = 64.7
 
-        self.click_shit("IP")
+        self.click("IP")
 
         # writes needed
-        self.write_shit("Diameter", str(dia))
-        self.write_shit("Non-Standard Depth", str(depth))
-        self.write_shit("RPH", str(rph))
-        self.write_shit("Bypass Process", str(by_process))
-        self.write_shit("Airflow scfm", str(process_cfm))
-        self.write_shit("Reactivation CFM", str(react_cfm))
-        self.write_shit("Reactivation Temp", str(react_temp))
-        self.write_shit("Reactivation Grains", str(react_grains))
+        self.write("Diameter", str(dia))
+        self.write("Non-Standard Depth", str(depth))
+        self.write("RPH", str(rph))
+        self.write("Bypass Process", str(by_process))
+        self.write("Airflow scfm", str(process_cfm))
+        self.write("Reactivation CFM", str(react_cfm))
+        self.write("Reactivation Temp", str(react_temp))
+        self.write("Reactivation Grains", str(react_grains))
 
         # click adjustments
-        self.click_shit("IP")
-        self.click_shit("Non-standard")
-        self.click_shit("Non-Standard")
-        self.click_shit("DBT & RH")
+        self.click("IP")
+        self.click("Non-standard")
+        self.click("Non-Standard")
+        self.click("DBT & RH")
         pyautogui.press('down')
         pyautogui.press('down')
         pyautogui.press('down')
@@ -186,7 +186,7 @@ class DesiccantScraper:
         pyautogui.press('enter')
 
     def process_temp_pull(self):
-        text_box = convert_to_black(self.read_shit(["Process Out Temp"])[0])
+        text_box = convert_to_black(self.read(["Process Out Temp"])[0])
         img_rgb = np.array(text_box)
         img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
 
@@ -228,8 +228,8 @@ def convert_to_black(img, threshold=300):
 
 
 def error_exit():
-    if pyautogui.locateCenterOnScreen('Templates/error_ok.png') is not None:
-        x, y = pyautogui.locateCenterOnScreen('Templates/error_ok.png')
+    if pyautogui.locateCenterOnScreen('error_ok.png') is not None:
+        x, y = pyautogui.locateCenterOnScreen('error_ok.png')
         pyautogui.click(x, y)
         return True
     return False
