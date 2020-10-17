@@ -9,7 +9,7 @@ from process import process_numbers, parse_text
 
 if __name__ == "__main__":
     # Open the Station List
-    base_dir = r'C:\Users\True\Desktop\I-P climate data_2017'
+    base_dir = r'I-P climate data_2017'
     out_txt = extract_text(os.path.join(base_dir, 'StnList_p.pdf'))
 
     # Extract all nonempty cells from the PDF
